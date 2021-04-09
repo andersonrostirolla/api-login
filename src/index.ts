@@ -6,7 +6,9 @@ import {
   CreateUser,
   DeleteUser,
   UpdateUser,
-  GetUserByEmail
+  GetUserByEmail,
+  RecoverPassword,
+  Login
 } from './core/usecase/user/'
 import UserRepository from './infra/out/repositories/user'
 
@@ -26,11 +28,15 @@ const resolveInputResolvers = (config: DriverEntry) => {
   const deleteUser = new DeleteUser(repository)
   const updateUser = new UpdateUser(repository)
   const getUserByEmail = new GetUserByEmail(repository)
+  const recoverPasswordUser = new RecoverPassword(repository)
+  const loginUser = new Login(repository)
   const userResolver = GraphqlUserResolver({
     create: createUser,
     delete: deleteUser,
     update: updateUser,
-    getByEmail: getUserByEmail
+    getByEmail: getUserByEmail,
+    recoverPassword: recoverPasswordUser,
+    login: loginUser
   })
 
   return mergeResolvers([ userResolver ])

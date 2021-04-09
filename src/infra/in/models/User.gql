@@ -12,6 +12,8 @@ input UserInput {
 
 type Query {
   user(email: String!): User!
+  recoverPassword(email: String!, name: String!): User!
+  login(email: String!, password: String!): User!
 }
 
 type Mutation {

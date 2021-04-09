@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "nodemon src/index.ts",
-    "build": ""
+    "start": "node src/index.ts"
   },
   "dependencies": {
     "apollo-server": "^2.22.2",

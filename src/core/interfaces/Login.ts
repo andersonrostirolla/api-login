@@ -1,4 +1,4 @@
-export default interface UserWithoutName {
+export default interface Login {
   email: String;
   password: String;
 }

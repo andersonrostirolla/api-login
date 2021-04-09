@@ -15,9 +15,7 @@
     "merge-graphql-schemas": "^1.7.8",
     "mongoose": "^5.12.3",
     "nodemon": "^2.0.7",
-    "sucrase": "^3.17.1"
-  },
-  "devDependencies": {
+    "sucrase": "^3.17.1",
     "@types/node": "^14.14.37",
     "@typescript-eslint/eslint-plugin": "^4.21.0",
     "@typescript-eslint/parser": "^4.21.0",

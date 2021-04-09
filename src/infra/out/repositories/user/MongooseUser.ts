@@ -8,8 +8,13 @@ import {
 import mongoose from 'mongoose'
 
 export default class MongooseUserRepository implements UserRepository {
+  private port: string = '';
+
   constructor () {
-    mongoose.connect('mongodb://localhost:27017/graphql', {
+    if (!process.env.MONGODB_URI?.includes('+srv')) {
+      this.port = `:${process.env.MONGODB_PORT}`
+    }
+    mongoose.connect(`${process.env.MONGODB_URI}${this.port}/${process.env.MONGODB_DB}${process.env.MONGODB_OTHERPARAMS}`, {
       useNewUrlParser: true,
       useUnifiedTopology: true
     })

@@ -11,6 +11,7 @@ import {
   Login
 } from './core/usecase/user/'
 import UserRepository from './infra/out/repositories/user'
+import dotenv from 'dotenv'
 
 interface DriverEntry {
   driver: string;
@@ -43,13 +44,14 @@ const resolveInputResolvers = (config: DriverEntry) => {
 }
 
 const start = async (driver: DriverEntry) => {
+  dotenv.config()
   const server: ApolloServer = new ApolloServer({
     typeDefs: resolveInputModels(),
     resolvers: resolveInputResolvers(driver)
   });
 
-  const port: string = process.env.PORT || '8080'
-  server.listen(parseInt(port)).then(({ url }) => console.log(`Server started on ${url}`))
+  const PORT: string = process.env.PORT || '8080'
+  server.listen(parseInt(PORT)).then(({ url }) => console.log(`Server started on ${url}`))
 };
 
 start({

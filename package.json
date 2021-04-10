@@ -5,7 +5,6 @@
   "author": "Anderson Rostirolla",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon src/index.ts",
     "start": "nodemon src/index.ts"
   },
   "dependencies": {

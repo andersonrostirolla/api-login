@@ -13,6 +13,7 @@ import {
 } from './core/usecase/user/'
 import UserRepository from './infra/out/repositories/user'
 import dotenv from 'dotenv'
+dotenv.config()
 
 interface DriverEntry {
   driver: string
@@ -47,7 +48,6 @@ const resolveInputResolvers = (config: DriverEntry) => {
 }
 
 const start = async (driver: DriverEntry) => {
-  dotenv.config()
   const server: ApolloServer = new ApolloServer({
     typeDefs: resolveInputModels(),
     resolvers: resolveInputResolvers(driver)

@@ -19,6 +19,7 @@ export default class MongooseUserRepository implements UserRepository {
     }
     mongoose.connect(`${process.env.MONGODB_URI}${this.port}/${process.env.MONGODB_DB}${process.env.MONGODB_OTHERPARAMS}`, {
       useNewUrlParser: true,
+      useFindAndModify: false,
       useUnifiedTopology: true
     })
   }
@@ -33,7 +34,7 @@ export default class MongooseUserRepository implements UserRepository {
   }
 
   async update(user: User): Promise<User> {
-    const { email, password, name } = await MongooseUser.findOneAndUpdate(user, { new: true })
+    const { email, password, name } = await MongooseUser.findByIdAndUpdate(user.email, { new: true })
     return new User(email, password, name)
   }
 
@@ -56,28 +57,29 @@ export default class MongooseUserRepository implements UserRepository {
   }
 
   async login(login: Login): Promise<User> {
-    const { email, password, name } = await MongooseUser.findOne({
+    const userFind = await MongooseUser.findOne({
       $and:[
         { _id: login.email },
         { password: login.password }
       ]
     })
-    if (!email || !password || !name) {
-      const { qty } = await TryLogin.findById(login.email)
-      const newQty = qty + 1
-      await TryLogin.findOneAndUpdate(login.email, { qty: newQty }, { new: true })
+    if (!userFind?.email || !userFind?.password || !userFind?.name) {
+      const newTryLogin = await TryLogin.findById(login.email)
+      const newQty = (newTryLogin?.qty || 0) + 1
+      await TryLogin.findByIdAndUpdate(login.email, { qty: newQty }, { new: true })
       throw new Error('Email ou senha incorretos!')
     }
-    return new User(email, password, name)
+    await TryLogin.findByIdAndUpdate(login.email, { qty: 0 }, { new: true })
+    return new User(userFind?.email, userFind?.password, userFind?.name)
   }
 
   async tryLogin(login: Login): Promise<boolean> {
     const LIMIT_TRYLOGIN: string = process.env.LIMIT_TRYLOGIN || '3'
-    const { email, qty } = await TryLogin.findById(login.email)
-    if (qty > Number(LIMIT_TRYLOGIN)) {
+    const newTryLogin = await TryLogin.findById(login.email)
+    if (newTryLogin?.qty >= Number(LIMIT_TRYLOGIN)) {
       throw new Error('Você tentou se autenticar mais de 3 vezes com a senha incorreta, usuário bloqueado!')
     }
-    if (!email) {
+    if (!newTryLogin?._id) {
       await TryLogin.create({
         ...login,
         qty: 0

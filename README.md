@@ -47,7 +47,7 @@ To build image execute this command: `docker-compose build`.
 To execute without docker, its simple:
 
 In project paste:
- - `yarn install && yarn run dev`
+ - `yarn install && yarn start`
 
 # Developing
 

@@ -52,3 +52,7 @@ In project paste:
 # Developing
 
 To view develop access `http://localhost:8080`
+
+# Execute lint
+
+To execute lint run: `yarn run lint`

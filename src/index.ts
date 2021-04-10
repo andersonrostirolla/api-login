@@ -20,7 +20,9 @@ interface DriverEntry {
 }
 
 const resolveInputModels = () => {
-  const typesArr = fileLoader(path.join(__dirname, 'infra', 'in', 'models', '**', '*.gql'))
+  const typesArr = fileLoader(
+    path.join(__dirname, 'infra', 'in', 'models', '**', '*.gql')
+  )
   return mergeTypes(typesArr)
 }
 
@@ -44,23 +46,25 @@ const resolveInputResolvers = (config: DriverEntry) => {
     tryLogin: tryLoginApp
   })
 
-  return mergeResolvers([ userResolver ])
+  return mergeResolvers([userResolver])
 }
 
 const start = async (driver: DriverEntry) => {
   const server: ApolloServer = new ApolloServer({
     typeDefs: resolveInputModels(),
     resolvers: resolveInputResolvers(driver)
-  });
+  })
 
   const PORT: string = process.env.PORT || '8080'
-  server.listen(parseInt(PORT)).then(({ url }) => console.log(`Server started on ${url}`))
-};
+  server
+    .listen(parseInt(PORT))
+    .then(({ url }) => console.log(`Server started on ${url}`))
+}
 
 const driver = process.env.DRIVER || 'memory'
 
 start({
   driver
 }).catch((err) => {
-  console.error(err);
-});
+  console.error(err)
+})

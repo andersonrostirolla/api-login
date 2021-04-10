@@ -3,22 +3,19 @@ module.exports = {
     es2021: true,
     node: true
   },
-  extends: [
-    'standard',
-    'plugin:@typescript-eslint/recommended',
-    'prettier/@typescript-eslint'
-  ],
+  extends: ['standard', 'plugin:@typescript-eslint/recommended'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 12,
     sourceType: 'module'
   },
-  plugins: [
-    '@typescript-eslint'
-  ],
+  plugins: ['@typescript-eslint'],
   globals: {
     Atomics: 'readonly',
     SharedArrayBuffer: 'readonly'
   },
-  rules: {}
+  rules: {
+    'no-useless-constructor': 'off',
+    '@typescript-eslint/no-useless-constructor': ['error']
+  }
 }

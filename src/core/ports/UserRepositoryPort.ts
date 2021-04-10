@@ -10,5 +10,6 @@ export default interface UserRepositoryPort {
   update(user: User): Promise<User>,
   getByEmail(email: string): Promise<User>,
   recoverPassword(user: UserWithoutPassword): Promise<User>,
-  login(login: Login): Promise<User>
+  login(login: Login): Promise<User>,
+  tryLogin(login: Login): Promise<boolean>
 }

@@ -1,4 +1,4 @@
 export default interface UserWithoutPassword {
-  email: String;
-  name: String;
+  email: String
+  name: String
 }

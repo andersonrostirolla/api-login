@@ -5,8 +5,15 @@ import {
   Login
 } from '../../../../core/interfaces'
 
+interface TryLogin {
+  email: String
+  password: String
+  qty: Number
+}
+
 export default class MongooseUserRepository implements UserRepository {
   private users: User[] = []
+  private logins: TryLogin[] = []
 
   async create(user: User): Promise<User> {
     this.users.push(user)
@@ -49,8 +56,27 @@ export default class MongooseUserRepository implements UserRepository {
     const userFind = this.users.find(({ email, password }) => email === login.email && password === login.password)
 
     if (!userFind) {
+      const loginIndex = this.logins.findIndex((loginFind) => loginFind.email === login.email)
+      if (loginIndex >= 0) {
+        this.logins[loginIndex].qty = Number(this.logins[loginIndex].qty) + 1
+      }
       throw new Error('Email ou senha incorretos!')
     }
     return new User(userFind.email, userFind.password, userFind.name)
+  }
+
+  async tryLogin(login: Login): Promise<boolean> {
+    const LIMIT_TRYLOGIN: string = process.env.LIMIT_TRYLOGIN || '3'
+    const loginFind = this.logins.find((loginFind) => loginFind.email === login.email)
+    if (loginFind && loginFind.qty > Number(LIMIT_TRYLOGIN)) {
+      throw new Error('Você tentou se autenticar mais de 3 vezes com a senha incorreta, usuário bloqueado!')
+    }
+    if (!loginFind) {
+      this.logins.push({
+        ...login,
+        qty: 0
+      })
+    }
+    return true
   }
 }

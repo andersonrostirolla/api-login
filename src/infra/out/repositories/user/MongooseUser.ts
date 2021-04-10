@@ -1,6 +1,9 @@
 import UserRepository from 'src/core/ports/UserRepositoryPort'
 import User from '../../../../core/models/User'
-import MongooseUser from '../../models/MongooseUser'
+import {
+  MongooseUser,
+  TryLogin
+} from '../../models'
 import {
   UserWithoutPassword,
   Login
@@ -60,8 +63,26 @@ export default class MongooseUserRepository implements UserRepository {
       ]
     })
     if (!email || !password || !name) {
+      const { qty } = await TryLogin.findById(login.email)
+      const newQty = qty + 1
+      await TryLogin.findOneAndUpdate(login.email, { qty: newQty }, { new: true })
       throw new Error('Email ou senha incorretos!')
     }
     return new User(email, password, name)
+  }
+
+  async tryLogin(login: Login): Promise<boolean> {
+    const LIMIT_TRYLOGIN: string = process.env.LIMIT_TRYLOGIN || '3'
+    const { email, qty } = await TryLogin.findById(login.email)
+    if (qty > Number(LIMIT_TRYLOGIN)) {
+      throw new Error('Você tentou se autenticar mais de 3 vezes com a senha incorreta, usuário bloqueado!')
+    }
+    if (!email) {
+      await TryLogin.create({
+        ...login,
+        qty: 0
+      })
+    }
+    return true
   }
 }

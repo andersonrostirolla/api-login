@@ -11,7 +11,8 @@ export default function (useCases: {
     delete: Command<string, void>,
     getByEmail: Command<string, User>,
     recoverPassword: Command<UserWithoutPassword, User>,
-    login: Command<Login, User>
+    login: Command<Login, User>,
+    tryLogin: Command<Login, boolean>
   }) {
   return {
     Query: {
@@ -23,6 +24,9 @@ export default function (useCases: {
       },
       login: (_: any, { email, password }: Login) => {
         return useCases.login.execute({ email, password })
+      },
+      tryLogin: (_: any, { email, password }: Login) => {
+        return useCases.tryLogin.execute({ email, password })
       }
     },
     Mutation: {

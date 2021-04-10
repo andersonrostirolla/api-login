@@ -8,13 +8,14 @@ import {
   UpdateUser,
   GetUserByEmail,
   RecoverPassword,
-  Login
+  Login,
+  TryLogin
 } from './core/usecase/user/'
 import UserRepository from './infra/out/repositories/user'
 import dotenv from 'dotenv'
 
 interface DriverEntry {
-  driver: string;
+  driver: string
 }
 
 const resolveInputModels = () => {
@@ -31,13 +32,15 @@ const resolveInputResolvers = (config: DriverEntry) => {
   const getUserByEmail = new GetUserByEmail(repository)
   const recoverPasswordUser = new RecoverPassword(repository)
   const loginUser = new Login(repository)
+  const tryLoginApp = new TryLogin(repository)
   const userResolver = GraphqlUserResolver({
     create: createUser,
     delete: deleteUser,
     update: updateUser,
     getByEmail: getUserByEmail,
     recoverPassword: recoverPasswordUser,
-    login: loginUser
+    login: loginUser,
+    tryLogin: tryLoginApp
   })
 
   return mergeResolvers([ userResolver ])
@@ -54,8 +57,10 @@ const start = async (driver: DriverEntry) => {
   server.listen(parseInt(PORT)).then(({ url }) => console.log(`Server started on ${url}`))
 };
 
+const driver = process.env.DRIVER || 'memory'
+
 start({
-  driver: 'mongoose'
+  driver
 }).catch((err) => {
   console.error(err);
 });

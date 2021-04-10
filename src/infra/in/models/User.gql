@@ -14,6 +14,7 @@ type Query {
   user(email: String!): User!
   recoverPassword(email: String!, name: String!): User!
   login(email: String!, password: String!): User!
+  tryLogin(email: String!, password: String!): Boolean
 }
 
 type Mutation {

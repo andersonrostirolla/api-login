@@ -4,6 +4,7 @@ import DeleteUser from './Delete'
 import GetUserByEmail from './GetUserByEmail'
 import RecoverPassword from './RecoverPassword'
 import Login from './Login'
+import TryLogin from './TryLogin'
 
 export {
   CreateUser,
@@ -11,5 +12,6 @@ export {
   DeleteUser,
   GetUserByEmail,
   RecoverPassword,
-  Login
+  Login,
+  TryLogin
 }

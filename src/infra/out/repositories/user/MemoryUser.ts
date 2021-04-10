@@ -68,7 +68,7 @@ export default class MongooseUserRepository implements UserRepository {
   async tryLogin(login: Login): Promise<boolean> {
     const LIMIT_TRYLOGIN: string = process.env.LIMIT_TRYLOGIN || '3'
     const loginFind = this.logins.find((loginFind) => loginFind.email === login.email)
-    if (loginFind && loginFind.qty > Number(LIMIT_TRYLOGIN)) {
+    if (loginFind && loginFind.qty >= Number(LIMIT_TRYLOGIN)) {
       throw new Error('Você tentou se autenticar mais de 3 vezes com a senha incorreta, usuário bloqueado!')
     }
     if (!loginFind) {

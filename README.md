@@ -57,6 +57,10 @@ To view develop access `http://localhost:8080`
 
 To execute lint run: `yarn run lint`
 
+# Execute tests
+
+To execute lint run: `yarn test`
+
 # Production
 
 This application run in [API-Login](https://app-login-andersonrosty.herokuapp.com)

@@ -59,7 +59,7 @@ To execute lint run: `yarn run lint`
 
 # Execute tests
 
-To execute lint run: `yarn test`
+To execute tests run: `yarn test`
 
 # Production
 

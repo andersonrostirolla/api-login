@@ -18,21 +18,15 @@ export default function (useCases: {
   recoverPassword: Command<UserWithoutPassword, User>,
   login: Command<Login, User>,
   tryLogin: Command<Login, boolean>,
+  list: Command<void, User[]>
 }): unknown {
   return {
     Query: {
-      user: (_: unknown, { email }: User) => {
-        return useCases.getByEmail.execute(email)
-      },
-      recoverPassword: (_: unknown, { email, name }: UserWithoutPassword) => {
-        return useCases.recoverPassword.execute({ email, name })
-      },
-      login: (_: unknown, { email, password }: Login) => {
-        return useCases.login.execute({ email, password })
-      },
-      tryLogin: (_: unknown, { email, password }: Login) => {
-        return useCases.tryLogin.execute({ email, password })
-      }
+      user: (_: unknown, { email }: User) => useCases.getByEmail.execute(email),
+      recoverPassword: (_: unknown, { email, name }: UserWithoutPassword) => useCases.recoverPassword.execute({ email, name }),
+      login: (_: unknown, { email, password }: Login) => useCases.login.execute({ email, password }),
+      tryLogin: (_: unknown, { email, password }: Login) => useCases.tryLogin.execute({ email, password }),
+      listUsers: () => useCases.list.execute()
     },
     Mutation: {
       createUser: async (_: unknown, { data }: UserInput) => {

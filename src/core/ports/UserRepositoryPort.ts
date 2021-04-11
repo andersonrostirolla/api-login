@@ -9,4 +9,5 @@ export default interface UserRepositoryPort {
   recoverPassword(user: UserWithoutPassword): Promise<User>
   login(login: Login): Promise<User>
   tryLogin(login: Login): Promise<boolean>
+  list(): Promise<User[]>
 }

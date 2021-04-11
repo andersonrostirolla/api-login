@@ -5,6 +5,7 @@ import GetUserByEmail from './GetUserByEmail'
 import RecoverPassword from './RecoverPassword'
 import Login from './Login'
 import TryLogin from './TryLogin'
+import List from './List'
 
 export {
   CreateUser,
@@ -13,5 +14,6 @@ export {
   GetUserByEmail,
   RecoverPassword,
   Login,
-  TryLogin
+  TryLogin,
+  List
 }

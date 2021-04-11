@@ -4,6 +4,10 @@ type User {
   name: String!
 }
 
+type UserList {
+  email: String!
+}
+
 input UserInput {
   email: String!
   password: String!
@@ -15,6 +19,7 @@ type Query {
   recoverPassword(email: String!, name: String!): User!
   login(email: String!, password: String!): User!
   tryLogin(email: String!, password: String!): Boolean
+  listUsers: [UserList!]!
 }
 
 type Mutation {

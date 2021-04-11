@@ -1,5 +1,5 @@
 import MongooseUserRepository from './MongooseUser'
-import MemoryUser from './MemoryUser'
+import MemoryUserRepository from './MemoryUser'
 import { UserRepositoryPort } from '../../../../core/ports'
 
 export default class UserRepository {
@@ -11,10 +11,10 @@ export default class UserRepository {
         return new MongooseUserRepository()
 
       case 'memory':
-        return new MemoryUser()
+        return new MemoryUserRepository()
 
       default:
-        return new MemoryUser()
+        return new MemoryUserRepository()
     }
   }
 }

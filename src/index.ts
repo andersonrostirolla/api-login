@@ -9,7 +9,8 @@ import {
   GetUserByEmail,
   RecoverPassword,
   Login,
-  TryLogin
+  TryLogin,
+  List
 } from './core/usecase/user/'
 import UserRepository from './infra/out/repositories/user'
 import dotenv from 'dotenv'
@@ -36,14 +37,17 @@ const resolveInputResolvers = (config: DriverEntry) => {
   const recoverPasswordUser = new RecoverPassword(repository)
   const loginUser = new Login(repository)
   const tryLoginApp = new TryLogin(repository)
-  const userResolver = GraphqlUserResolver({
+  const listUsers = new List(repository)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const userResolver: any = GraphqlUserResolver({
     create: createUser,
     delete: deleteUser,
     update: updateUser,
     getByEmail: getUserByEmail,
     recoverPassword: recoverPasswordUser,
     login: loginUser,
-    tryLogin: tryLoginApp
+    tryLogin: tryLoginApp,
+    list: listUsers
   })
 
   return mergeResolvers([userResolver])

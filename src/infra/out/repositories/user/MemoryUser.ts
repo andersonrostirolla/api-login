@@ -8,17 +8,32 @@ interface TryLogin {
   qty: number
 }
 
-export default class MongooseUserRepository implements UserRepository {
+export default class MemoryUserRepository implements UserRepository {
   private users: User[] = []
   private logins: TryLogin[] = []
 
+  async getByEmail (emailUser: string): Promise<User> {
+    const user = this.users.find(({ email }) => email === emailUser)
+    if (!user) {
+      throw new Error('Nenhum email encontrado!')
+    }
+    return user
+  }
+
   async create (user: User): Promise<User> {
+    if (!user.email || !user.password || !user.name) {
+      throw new Error('Alguma informação esta faltando para o cadastro.')
+    }
     this.users.push(user)
     return user
   }
 
   async delete (email: string): Promise<void> {
+    const lenghtUsers = this.users.length
     this.users = this.users.filter((user) => user.email !== email)
+    if (lenghtUsers === this.users.length) {
+      throw new Error('Usuário não encontrado para deleção.')
+    }
   }
 
   async update (user: User): Promise<User> {
@@ -32,14 +47,6 @@ export default class MongooseUserRepository implements UserRepository {
     }
     this.users[indexToUpdate] = userUpdated
     return new User(userUpdated.email, userUpdated.password, userUpdated.name)
-  }
-
-  async getByEmail (emailUser: string): Promise<User> {
-    const user = this.users.find(({ email }) => email === emailUser)
-    if (!user) {
-      throw Error('Nenhum email encontrado!')
-    }
-    return user
   }
 
   async recoverPassword (user: UserWithoutPassword): Promise<User> {
@@ -88,5 +95,9 @@ export default class MongooseUserRepository implements UserRepository {
       })
     }
     return true
+  }
+
+  async list (): Promise<User[]> {
+    return this.users.map(({ email, password, name }) => new User(email, password, name))
   }
 }

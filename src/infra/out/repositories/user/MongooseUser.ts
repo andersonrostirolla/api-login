@@ -4,6 +4,12 @@ import { MongooseUser, TryLogin } from '../../models'
 import { UserWithoutPassword, Login } from '../../../../core/interfaces'
 import mongoose from 'mongoose'
 
+interface UserMongoose {
+  _id: string,
+  password: string,
+  name: string
+}
+
 export default class MongooseUserRepository implements UserRepository {
   private port = ''
 
@@ -21,13 +27,25 @@ export default class MongooseUserRepository implements UserRepository {
     )
   }
 
+  async getByEmail (emailUser: string): Promise<User> {
+    const { email, password, name } = await MongooseUser.findById(emailUser)
+    return new User(email, password, name)
+  }
+
   async create (user: User): Promise<User> {
+    if (!user.email || !user.password || !user.name) {
+      throw new Error('Alguma informação esta faltando para o cadastro.')
+    }
     const { email, password, name } = await MongooseUser.create(user)
     return new User(email, password, name)
   }
 
   async delete (email: string): Promise<void> {
     await MongooseUser.findByIdAndDelete(email)
+    const user = this.getByEmail(email)
+    if (user) {
+      throw new Error('Usuário não encontrado para deleção.')
+    }
   }
 
   async update (user: User): Promise<User> {
@@ -36,13 +54,7 @@ export default class MongooseUserRepository implements UserRepository {
       email: user.email,
       password: user.password
     }, { new: true })
-    console.log('here', user, userFind)
     return new User(userFind.email, userFind.password, userFind.name)
-  }
-
-  async getByEmail (emailUser: string): Promise<User> {
-    const { email, password, name } = await MongooseUser.findById(emailUser)
-    return new User(email, password, name)
   }
 
   async recoverPassword (user: UserWithoutPassword): Promise<User> {
@@ -88,5 +100,10 @@ export default class MongooseUserRepository implements UserRepository {
       })
     }
     return true
+  }
+
+  async list (): Promise<User[]> {
+    const users = await MongooseUser.find()
+    return users.map((user: UserMongoose) => new User(user._id, user.password, user.name))
   }
 }
